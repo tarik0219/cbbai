@@ -1,0 +1,4 @@
+bs4
+requests
+boto3
+aws-lambda-powertools
