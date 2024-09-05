@@ -27,10 +27,6 @@ def addApRank(data):
             if team['id'] in ap_ranks:
                 team['ranks']['ap_rank'] = ap_ranks[team['id']]
             else:
-                # if team['ranks']['stat_rank'] < length_rank:
-                #     team['ranks']['ap_rank'] = length_rank + 1
-                # else:
-                #     team['ranks']['ap_rank'] = team['ranks']['stat_rank']
                 team['ranks']['ap_rank'] = None
             data[count] = team
     except Exception as e:

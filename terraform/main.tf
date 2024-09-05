@@ -2,6 +2,11 @@ provider "aws" {
   region = "us-east-2"  # Specify your AWS region
 }
 
+#Add variable net_flag to terraform
+variable "net_flag" {
+  default = "False"
+}
+
 data "archive_file" "lambda_zip" {
   type        = "zip"
   source_dir  = "../lambda/src"
@@ -63,6 +68,39 @@ resource "aws_lambda_function" "lambda_function_ap_top25" {
   role          = "arn:aws:iam::867522236259:role/lambda"  # Update with the ARN of the IAM role
   timeout = 300
   layers = [aws_lambda_layer_version.lambda_layer.arn]  # Attach the Lambda layer
+}
+
+# Create Lambda for net rating
+resource "aws_lambda_function" "lambda_function_net_rating" {
+  function_name = "net_rating"
+  filename      = "../lambda/lambda.zip"
+  handler       = "net.lambda_handler"  # Update if needed
+  runtime       = "python3.10"
+  role          = "arn:aws:iam::867522236259:role/lambda"  # Update with the ARN of the IAM role
+  timeout = 300
+  layers = [aws_lambda_layer_version.lambda_layer.arn]  # Attach the Lambda layer
+
+  environment {
+    variables = {
+      NET_FLAG = var.net_flag
+    }
+  }
+}
+
+# Create Lambda for Stats Ranks
+resource "aws_lambda_function" "lambda_function_stats_ranks" {
+  function_name = "stats_ranks"
+  filename      = "../lambda/lambda.zip"
+  handler       = "stats.lambda_handler"  # Update if needed
+  runtime       = "python3.10"
+  role          = "arn:aws:iam::867522236259:role/lambda"  # Update with the ARN of the IAM role
+  timeout = 300
+  layers = [aws_lambda_layer_version.lambda_layer.arn]  # Attach the Lambda layer
+  environment {
+    variables = {
+      NET_FLAG = var.net_flag
+    }
+  }
 }
 
 #Create a DynamoDB table
