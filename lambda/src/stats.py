@@ -81,6 +81,7 @@ def update_dynamoDB_table(data):
                 },
                 ReturnValues="UPDATED_NEW"
             )
+        logger.info("DynamoDB table updated")
     except Exception as e:
         logger.error(f"Error updating dynamoDB table: {e}")
 

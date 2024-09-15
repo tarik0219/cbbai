@@ -58,6 +58,7 @@ def batch_add_odds_dynamo(oddsResponseList):
                         'overUnder': str(odds['overUnder'])
                     }
                 )
+        logger.info(f"Added odds to dynamoDB", numOdds = len(oddsResponseList))
     except Exception as e:
         logger.error(f"Error adding odds to dynamoDB", e = e)
 
@@ -81,7 +82,7 @@ def lambda_handler(event, context):
     #     oddsResponseMap, oddsResponseList = get_odds_by_date(date)
     #     batch_add_odds_dynamo(oddsResponseList)
 
-    todayDate = datetime.datetime.now().strftime("%Y%m%d")
+    todayDate = datetime.now().strftime("%Y%m%d")
     oddsResponseMap, oddsResponseList = get_odds_by_date(todayDate)
     batch_add_odds_dynamo(oddsResponseList)
     return {

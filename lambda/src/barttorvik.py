@@ -88,7 +88,7 @@ def update_dynamoDB_table(teamsData):
                     ':val': item
                 }
             )
-        logger.info("DynamoDB table updated with kenpom data")
+        logger.info("DynamoDB table updated with barttorvik data")
     except Exception as e:
         logger.error(f"Error updating dynamoDB table: {e}")
 
@@ -99,6 +99,7 @@ def lambda_handler(event, context):
     bt_id = read_file_from_s3(bucket, key)
     bt_id = json.loads(bt_id)
     data = GetBarttorvikData(year,bt_id)
+    update_dynamoDB_table(data)
     return {
         'statusCode': 200,
         'body': "data updated"

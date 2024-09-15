@@ -63,7 +63,7 @@ def GetKenpomData(kp_id):
     return kenpom
 
 def read_file_from_s3(bucket, key):
-    logger.info("Reading kenpom id file from s3")
+    logger.info("Reading file from s3")
     s3 = boto3.client('s3')
     obj = s3.get_object(Bucket=bucket, Key=key)
     data = obj['Body'].read()
