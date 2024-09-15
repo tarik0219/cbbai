@@ -1,0 +1,8 @@
+terraform taint aws_lambda_function.lambda_function_add_odds
+terraform taint aws_lambda_function.lambda_function_stats_ranks
+terraform taint aws_lambda_function.lambda_function_net_rating
+terraform taint aws_lambda_function.lambda_function_ap_top25
+terraform taint aws_lambda_function.lambda_function_barttorvik
+terraform taint aws_lambda_function.lambda_function_kenpom
+terraform tain aws_lambda_layer_version.lambda_layer 
+terraform apply -auto-approve
