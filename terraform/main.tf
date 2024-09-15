@@ -103,6 +103,17 @@ resource "aws_lambda_function" "lambda_function_stats_ranks" {
   }
 }
 
+#Create lambda for adding odds
+resource "aws_lambda_function" "lambda_function_add_odds" {
+  function_name = "add_odds"
+  filename      = "../lambda/lambda.zip"
+  handler       = "add_odds.lambda_handler"  # Update if needed
+  runtime       = "python3.10"
+  role          = "arn:aws:iam::867522236259:role/lambda"  # Update with the ARN of the IAM role
+  timeout = 900
+  layers = [aws_lambda_layer_version.lambda_layer.arn]  # Attach the Lambda layer
+}
+
 #Create a DynamoDB table
 resource "aws_dynamodb_table" "example_table" {
   name           = "cbb-ai"  # Change the table name as per your requirement
