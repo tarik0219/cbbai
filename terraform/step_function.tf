@@ -40,3 +40,15 @@ resource "aws_sfn_state_machine" "step_function" {
   definition = file("${path.module}/step_function.json")
 }
 
+# resource "aws_cloudwatch_event_rule" "step_function_trigger" {
+#   name        = "StepFunctionTrigger"
+#   description = "Trigger Step Function every morning at 8am central time"
+#   schedule_expression = "cron(0 8 * * ? *)"
+# }
+
+# resource "aws_cloudwatch_event_target" "step_function_target" {
+#   rule      = aws_cloudwatch_event_rule.step_function_trigger.name
+#   arn       = aws_sfn_state_machine.step_function.arn
+#   role_arn  = aws_iam_role.step_function_role.arn
+#   target_id = "StepFunctionTarget"
+# }
