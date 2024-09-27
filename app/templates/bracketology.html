@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% block title %} {{conference}} {% endblock %}
+{% block content %}
+<meta charset="UTF-8">
+<title>2023 College Basketball AI Rankings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css"
+    integrity="sha512-5Ad5E5eQ/7ObYvhnzKjMk21bscS1S7GnmvkiOu9qVdO4gs4fTbTtDY8Tc3qyqKfBtGczh03i9QIVxojd37RlZg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    /* Add your custom styles here */
+    .container {
+        margin-top: 10px;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 48px;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px #fff;
+    }
+
+    table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th,
+    td {
+        font-size: 18px;
+        text-align: center;
+        vertical-align: middle !important;
+    }
+
+
+    /* Styles for mobile devices */
+    @media only screen and (max-width: 1000px) {
+        .container {
+            margin-top: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px #fff;
+        }
+        h2 {
+            text-align: center;
+        }
+
+        th,
+        td {
+            font-size: 8px;
+            text-align: center;
+            vertical-align: middle !important;
+        }
+        img {
+            width: 25px;
+            height: 25px;
+        }
+
+    }
+</style>
+
+<div class="container">
+    <h1>CBB-AI Bracketology</h1>
+    <div class="container mt-1">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered table-sm table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th colspan="2">Last Four Byes</th>
+                        <th colspan="2">Last Four In</th>
+                        <th colspan="2">First Four Out</th>
+                        <th colspan="2">Next Four Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for n in range(4) %}
+                    <tr>
+                        {% set team = bracketology.firstFourBye[n] %}
+                        {% set value = teamDict[team].id %}
+                        <td colspan="1">
+                        <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',value,'.png']) }}" alt="{{ ''.join([value]) }}" width="25" height="25" title="{{ ''.join([value]) }}">
+                        </td>
+                        <td colspan="1">
+                        <a href="{{ ''.join(['/schedule/', value ]) }}">{{team}}</a>
+                        </td>
+                    
+                    
+                        {% set team = bracketology.lastFourIn[n] %}
+                        {% set value = teamDict[team].id %}
+                        <td colspan="1">
+                        <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',value,'.png']) }}" alt="{{ ''.join([value]) }}" width="25" height="25" title="{{ ''.join([value]) }}">
+                        </td>
+                        <td colspan="1">
+                        <a href="{{ ''.join(['/schedule/', value ]) }}">{{team}}</a>
+                        </td>
+                        
+                        
+                        {% set team = bracketology.firstFourOut[n] %}
+                        {% set value = teamDict[team].id %}
+                        <td colspan="1">
+                        <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',value,'.png']) }}" alt="{{ ''.join([value]) }}" width="25" height="25" title="{{ ''.join([value]) }}">
+                        </td>
+                        <td colspan="1">
+                        <a href="{{ ''.join(['/schedule/', value ]) }}">{{team}}</a>
+                        </td>
+                      
+                        {% set team = bracketology.nextFourOut[n] %}
+                        {% set value = teamDict[team].id %}
+                        <td colspan="1">
+                        <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',value,'.png']) }}" alt="{{ ''.join([value]) }}" width="25" height="25" title="{{ ''.join([value]) }}">
+                        </td>
+                        <td colspan="1">
+                        <a href="{{ ''.join(['/schedule/', value ]) }}">{{team}}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <table class="table table-hover table-bordered table-sm table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th colspan="4">Waiting Room</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for n in range(4) %}
+                    <tr>
+                        {% set team = bracketology.bubble[n] %}
+                        {% set value = teamDict[team].id %}
+                        <td colspan="1">
+                        <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',value,'.png']) }}" alt="{{ ''.join([value]) }}" width="25" height="25" title="{{ ''.join([value]) }}">
+                        </td>
+                        <td colspan="1">
+                        <a href="{{ ''.join(['/schedule/', value ]) }}">{{team}}</a>
+                        </td>
+                        
+                        {% set team = bracketology.bubble[n+4] %}
+                        {% set value = teamDict[team].id %}
+                        <td colspan="1">
+                        <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',value,'.png']) }}" alt="{{ ''.join([value]) }}" width="25" height="25" title="{{ ''.join([value]) }}">
+                        </td>
+                        <td colspan="1">
+                        <a href="{{ ''.join(['/schedule/', value ]) }}">{{team}}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h1>Seeds</h1>
+            * - Conference Champion
+            ** - First Four
+            <table class="table table-hover table-bordered table-sm table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Seed</th>
+                        <th></th>
+                        <th>Team</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in seedData %}
+                    <tr>
+                        <td font-size="16px">
+                            {% if team[3] == "1"%}
+                                {{team[0]}}**
+                            {% elif team[2] == "1"%}
+                                {{team[0]}}*
+                            {% else %}
+                                {{team[0]}}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% set value = teamDict[team[1]].id %}
+                            <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',value,'.png']) }}" alt="{{ ''.join([value]) }}" width="50" height="50" title="{{ ''.join([value]) }}">
+                        </td>
+                        <td>
+                            <a href="{{ ''.join(['/schedule/', value ]) }}">{{team[1]}}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h1>Conference Bids</h1>
+            <table class="table table-hover table-bordered table-sm table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Bids</th>
+                        <th>Conference</th>
+                        <th>Teams</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for conference in conferenceList %}
+                    <tr>
+                        <td>
+                            {{conference[1]}}
+                        </td>
+                        <td>
+                            <a href="{{ ''.join(['/conference/', conference[0] ]) }}">{{conference[0]}}</a>
+                        </td>
+                        <td>
+                            {% for team in confereceDict[conference[0]].teams%}
+                                <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',team,'.png']) }}" alt="{{ ''.join([team]) }}" width="50" height="50" title="{{ ''.join([team]) }}">
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</div>
+{% endblock %}

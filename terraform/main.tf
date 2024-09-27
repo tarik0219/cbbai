@@ -1,5 +1,6 @@
 provider "aws" {
   region = "us-east-2"  # Specify your AWS region
+  profile = "tarik0219"
 }
 
 #Add variable net_flag to terraform
