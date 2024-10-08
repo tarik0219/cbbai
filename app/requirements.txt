@@ -2,4 +2,6 @@ Flask
 boto3
 Flask-Bootstrap
 requests
-numpy
+pydantic
+numpy==1.21.0
+scikit-learn==1.1.2

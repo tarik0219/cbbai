@@ -1,6 +1,7 @@
 layer/python
 notes.txt
 terraform/.terraform.lock.hcl
+terraform/.terraform
 lambda/lambda.zip
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
@@ -12,3 +13,4 @@ layer/lambda_layer.zip
 app/config/config.py
 *.pyc
 *.zip
+venv/
