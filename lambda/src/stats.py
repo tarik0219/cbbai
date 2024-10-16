@@ -29,6 +29,16 @@ def addAverage(data):
 def addStatRank(data):
     data.sort(key=lambda x: x["barttorvik"]["offRating"] - x["barttorvik"]["defRating"] + x["kenpom"]["offRating"] - x["kenpom"]["defRating"], reverse=True)
     for count,team in enumerate(data):
+        if "ranks" not in team:
+            team['ranks'] = {
+                "stat_rank": None,
+                "ap_rank": None,
+                "net_rank": None,
+                "rank": None,
+                "rankOff": None,
+                "rankDef": None,
+                "rankTempo": None
+            }
         team['ranks']['stat_rank'] = count + 1
         data[count] = team
     return data

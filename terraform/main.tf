@@ -8,22 +8,42 @@ variable "net_flag" {
   default = "False"
 }
 
+variable "year" {
+  default = "2025"
+}
+
 data "archive_file" "lambda_zip" {
   type        = "zip"
   source_dir  = "../lambda/src"
   output_path = "../lambda/lambda.zip"
 }
 
+#pip install layer/requirments.txt int layer/python
+resource "null_resource" "install_requirements" {
+  provisioner "local-exec" {
+    command = "python -m pip install -r ../layer/requirements.txt -t ../layer/python"
+    working_dir = "${path.module}"
+  }
+}
+
+#copy app/utilscbb into layer/python
+resource "null_resource" "copy_utilscbb" {
+  provisioner "local-exec" {
+    command = "cp -r ../app/utilscbb ../layer/python"
+    working_dir = "${path.module}"
+  }
+}
+
 # Package Lambda layer (dependencies)
 data "archive_file" "layer_zip" {
   type        = "zip"
   source_dir  = "../layer"
-  output_path = "../layer/lambda_layer.zip"
+  output_path = "../lambda_layer.zip"
 }
 
 # Create a Lambda layer for dependencies
 resource "aws_lambda_layer_version" "lambda_layer" {
-  filename = "../layer/lambda_layer.zip"
+  filename = "../lambda_layer.zip"
   layer_name = "my-python-layer"
   compatible_runtimes = ["python3.10"]  # Specify the Python runtime version
 
@@ -100,6 +120,26 @@ resource "aws_lambda_function" "lambda_function_stats_ranks" {
   environment {
     variables = {
       NET_FLAG = var.net_flag
+    }
+  }
+}
+
+
+# Create Lambda for Stats Records
+resource "aws_lambda_function" "lambda_function_records" {
+  function_name = "records"
+  filename      = "../lambda/lambda.zip"
+  handler       = "records.lambda_handler"  # Update if needed
+  runtime       = "python3.10"
+  role          = "arn:aws:iam::867522236259:role/lambda"  # Update with the ARN of the IAM role
+  timeout = 900
+  memory_size = 512
+  layers = [aws_lambda_layer_version.lambda_layer.arn]  # Attach the Lambda layer
+  environment {
+    variables = {
+      NET_FLAG = var.net_flag
+      YEAR = var.year
+      ALL = "True"
     }
   }
 }

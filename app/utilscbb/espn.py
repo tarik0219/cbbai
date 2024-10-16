@@ -229,5 +229,3 @@ def call_espn_scores_api(date):
         espnScores[gameId] = espnGame
 
     return espnScores
-
-test = call_espn_team_standings_api(2024)

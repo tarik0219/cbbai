@@ -1,6 +1,7 @@
 import pickle
 import numpy as np
 import os
+import requests
 def warn(*args, **kwargs):
     pass
 import warnings
@@ -14,9 +15,15 @@ def changeBool(value):
         return 1
     else:
         return 0
-
+    
+def change_data_to_float(data):
+    for key in data:
+        data[key] = float(data[key])
+    return data
 
 def make_prediction_api(homeData, awayData, siteType):
+    homeData = change_data_to_float(homeData)
+    awayData = change_data_to_float(awayData)
     if siteType:
         siteType = changeBool(siteType)
         X = [[homeData['offRating'],homeData['defRating'],homeData['TempoRating'],awayData['offRating'],awayData['defRating'],awayData['TempoRating'],siteType]]
@@ -51,5 +58,4 @@ def make_prediction_api(homeData, awayData, siteType):
     return homeScore,awayScore,prob
 
 
-def call_prediction_endpoint(data):
-    
+

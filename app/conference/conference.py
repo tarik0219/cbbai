@@ -44,11 +44,20 @@ def get_all_conf_data():
 @conference.route('/conference/<conf>')
 def conference_stadnings(conf):
     data = get_teams(conf)
-    standings = call_espn_team_standings_api(YEAR)
-    for count,team in enumerate(data):
-        data[count]['record'] = standings[team['id']]
-    data.sort(key=lambda x: (x["record"]['conferenceStanding']))
-    print(data)
+    try:
+        standings = call_espn_team_standings_api(YEAR)
+        for count,team in enumerate(data):
+            data[count]['record'] = standings[team['id']]
+        data.sort(key=lambda x: (x["record"]['conferenceStanding']))
+    except Exception as e:
+        #sort by rank if no standings
+        for count,team in enumerate(data):
+            data[count]['record'] = {
+                "confWin": data[count]['records']['confWin'],
+                "confLoss": data[count]['records']['confLoss'],
+                "gamesBehind":0.0,
+            }
+        data.sort(key=lambda x: (-x['records']['confProjectedWin'], x['ranks']['rank']))
     return render_template('conference.html', data=data, conference = conf)
 
 @conference.route('/conference')

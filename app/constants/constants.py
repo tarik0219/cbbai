@@ -1,4 +1,4 @@
-YEAR = "2024"
+YEAR = "2025"
 NET_RANK_BOOL = False
 PYTHON_ANYWHERE_PATH = "CollegeBasketballAnalyticsAPI/data/"
 LOCAL_PATH = "data/"
@@ -10,6 +10,40 @@ TEAMS_TABLE_NAME = "teams"
 ODDS_TABLE_NAME = "cache"
 CS_TABLE_NAME = "cs"
 APP_SYNC_URL = "https://5pb6ihqy4zbe7gftm4uw6nojci.appsync-api.us-east-2.amazonaws.com/graphql"
+CONF = ['ALL',
+ 'TOP 25',
+ 'A-10',
+ 'A-Sun',
+ 'AAC',
+ 'ACC',
+ 'AEC',
+ 'Big 12',
+ 'Big East',
+ 'Big Sky',
+ 'Big South',
+ 'Big Ten',
+ 'Big West',
+ 'CAA',
+ 'CUSA',
+ 'Horizon',
+ 'Ivy',
+ 'MAAC',
+ 'MAC',
+ 'MEAC',
+ 'MVC',
+ 'MWC',
+ 'NEC',
+ 'OVC',
+ 'Pac-12',
+ 'Patriot',
+ 'SEC',
+ 'SWAC',
+ 'Southern',
+ 'Southland',
+ 'Summit',
+ 'Sun Belt',
+ 'WAC',
+ 'WCC']
 CONFERENCE_MAP = {
     "WCC": "WCC",
     "B10": "Big Ten",

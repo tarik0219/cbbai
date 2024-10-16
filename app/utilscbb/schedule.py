@@ -1,6 +1,5 @@
 from utilscbb.espn import call_espn_schedule_api
-from constants import constants
-from utilscbb.predict import make_prediction_api
+from utilscbb.predictAPI import call_prediction_endpoint
 import random
 import copy
 from utilscbb.dynamo import get_all_team_data, get_odds_data
@@ -200,18 +199,25 @@ def teamsToDict(teams):
         teamDict[team['id']] = team
     return teamDict
 
+def change_data_to_float(data):
+    for key in data:
+        data[key] = float(data[key])
+    return data
+
 def get_team_schedule(teamID, year, netRankBool):
     espnResponse = call_espn_schedule_api(teamID, year)
     teamsData = get_all_team_data()
     teamsDict = teamsToDict(teamsData)
     teamData = teamsDict[teamID]
+    request = {"games":[]}
+    countNones = 0
     for count,game in enumerate(espnResponse):
         opponentData = teamsDict[game['opponentId']] if game['opponentId'] in teamsDict else None
         espnResponse[count]['opponentData'] = opponentData
         gameType = change_game_type(teamData, opponentData, game['gameType'], game['date'], game['notes'])
         espnResponse[count]['gameType'] = gameType
         if opponentData != None:
-            if gameType != "REG" and gameType != "CONF" and gameType != "CONFTOUR":
+            if gameType not in ['CONF','CONFTOUR','REG']:
                 espnResponse[count]['quad'] = 0
             elif netRankBool:
                 espnResponse[count]['quad'] = quadMap[quad_rank(opponentData['ranks']['net_rank'], game['venue'])]
@@ -219,19 +225,41 @@ def get_team_schedule(teamID, year, netRankBool):
                 espnResponse[count]['quad'] = quadMap[quad_rank(opponentData['ranks']['rank'], game['venue'])]
         if opponentData and not game['completed']:
             if game['venue'] == "@":
-                awayScore,homeScore,prob = make_prediction_api(opponentData['average'],teamData['average'],False) 
-                prob = 1-prob
+                request['games'].append({
+                    "homeData": change_data_to_float(opponentData['average']),
+                    "awayData": change_data_to_float(teamData['average']),
+                    "neutralSite": False
+                })
             elif game['venue'] == "H":
-                homeScore,awayScore,prob = make_prediction_api(teamData['average'],opponentData['average'],False)
+                request['games'].append({
+                    "homeData": change_data_to_float(teamData['average']),
+                    "awayData": change_data_to_float(opponentData['average']),
+                    "neutralSite": False
+                })
             else:
-                homeScore,awayScore,prob = make_prediction_api(teamData['average'],opponentData['average'],True)
-        elif opponentData == None:
-            homeScore,awayScore,prob = None,None,.99
+                request['games'].append({
+                    "homeData": change_data_to_float(teamData['average']),
+                    "awayData": change_data_to_float(opponentData['average']),
+                    "neutralSite": True
+                })
+    predictions = call_prediction_endpoint(request)
+    for count,game in enumerate(espnResponse):
+        if not game['completed']:
+            if game['opponentData'] == None:
+                countNones += 1
+                espnResponse[count]['scorePrediction'] = None
+                espnResponse[count]['opponentScorePrediction'] = None
+                espnResponse[count]['winProbability'] = .99
+            elif game['venue'] == "@":
+                espnResponse[count]['scorePrediction'] = predictions[count - countNones]['awayScore']
+                espnResponse[count]['opponentScorePrediction'] = predictions[count - countNones]['homeScore']
+                espnResponse[count]['winProbability'] = 1-predictions[count - countNones]['prob']
+            else:
+                espnResponse[count]['scorePrediction'] = predictions[count - countNones]['homeScore']
+                espnResponse[count]['opponentScorePrediction'] = predictions[count - countNones]['awayScore']
+                espnResponse[count]['winProbability'] = predictions[count - countNones]['prob']
         else:
-            homeScore,awayScore,prob = None,None,None
-        espnResponse[count]['scorePrediction'] = homeScore
-        espnResponse[count]['opponentScorePrediction'] = awayScore
-        espnResponse[count]['winProbability'] = prob
+            countNones += 1
     espnResponse = add_odds(espnResponse)
     records = calculate_records(espnResponse, teamID)
     if netRankBool:
