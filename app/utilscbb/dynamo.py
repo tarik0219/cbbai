@@ -1,5 +1,13 @@
 import boto3
 from boto3.dynamodb.conditions import Key
+from constants import constants
+
+
+def boto3_setup():
+    try:
+        boto3.setup_default_session(aws_access_key_id='fake', aws_secret_access= "")
+    except:
+        pass
 
 
 def get_all_team_data():
