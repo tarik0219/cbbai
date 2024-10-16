@@ -5,16 +5,17 @@ from constants import constants
 
 def boto3_setup():
     try:
-        boto3.setup_default_session(aws_access_key_id='fake', aws_secret_access= "")
+        boto3.setup_default_session(aws_access_key_id=constants.aws_access_key_id, aws_secret_access_key=constants.aws_secret_access)
+        
     except:
-        pass
+        try:
+            boto3.setup_default_session(profile_name='tarik0219')
+        except:
+            pass
 
 
 def get_all_team_data():
-    try:
-        boto3.setup_default_session(profile_name='tarik0219')
-    except:
-        pass
+    boto3_setup()
     dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
     table = dynamodb.Table('cbb-ai')
     response = table.scan()
@@ -22,10 +23,7 @@ def get_all_team_data():
     return data
 
 def get_team_data_name(team_name):
-    try:
-        boto3.setup_default_session(profile_name='tarik0219')
-    except:
-        pass
+    boto3_setup()
     dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
     table = dynamodb.Table('cbb-ai')  # Replace with your actual table name
     response = table.query(
@@ -37,10 +35,7 @@ def get_team_data_name(team_name):
 
 # batch get items from dynamodb odds table
 def get_odds_data(gameIDs):
-    try:
-        boto3.setup_default_session(profile_name='tarik0219')
-    except:
-        pass
+    boto3_setup()
     client = boto3.client('dynamodb', region_name='us-east-2')
     if not gameIDs:
         return []
