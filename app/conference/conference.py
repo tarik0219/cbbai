@@ -48,7 +48,7 @@ def conference_stadnings(conf):
         standings = call_espn_team_standings_api(YEAR)
         for count,team in enumerate(data):
             data[count]['record'] = standings[team['id']]
-        data.sort(key=lambda x: (x["record"]['conferenceStanding']))
+        data.sort(key=lambda x: (x["record"]['conferenceStanding'],-x['records']['confProjectedWin'], x['ranks']['rank']))
     except Exception as e:
         #sort by rank if no standings
         for count,team in enumerate(data):

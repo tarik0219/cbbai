@@ -77,6 +77,12 @@ resource "aws_lambda_function" "lambda_function_barttorvik" {
   role          = "arn:aws:iam::867522236259:role/lambda"  # Update with the ARN of the IAM role
   timeout = 300
   layers = [aws_lambda_layer_version.lambda_layer.arn]  # Attach the Lambda layer
+
+  environment {
+    variables = {
+      YEAR = var.year
+    }
+  }
   
 }
 

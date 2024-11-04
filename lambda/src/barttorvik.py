@@ -4,11 +4,12 @@ import json
 from decimal import Decimal
 import boto3
 from aws_lambda_powertools import Logger
+import os
 
 logger = Logger(service="cbb-ai")
 
 def get_url_bt(year):
-    return "https://barttorvik.com/trank.php?year={}&sort=&conlimit=#".format(year)
+    return "https://barttorvik.com/trank.php?year={year}&sort=&conlimit=#".format(year)
 
 
 def get_table_rows_bt(year):
@@ -93,7 +94,7 @@ def update_dynamoDB_table(teamsData):
         logger.error(f"Error updating dynamoDB table: {e}")
 
 def lambda_handler(event, context):
-    year = "2024"
+    year = os.environ['YEAR']
     bucket = 'cbb-ai'
     key = 'bt_id.json'
     bt_id = read_file_from_s3(bucket, key)
