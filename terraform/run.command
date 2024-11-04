@@ -4,5 +4,7 @@ terraform taint aws_lambda_function.lambda_function_net_rating
 terraform taint aws_lambda_function.lambda_function_ap_top25
 terraform taint aws_lambda_function.lambda_function_barttorvik
 terraform taint aws_lambda_function.lambda_function_kenpom
-terraform tain aws_lambda_layer_version.lambda_layer 
+terraform taint aws_lambda_layer_version.lambda_layer 
+terraform taint aws_s3_bucket_object.app_zip
+terraform taint aws_elastic_beanstalk_application_version.eb_app_version
 terraform apply -auto-approve

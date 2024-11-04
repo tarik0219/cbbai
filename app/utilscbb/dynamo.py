@@ -40,7 +40,8 @@ def get_odds_data(gameIDs):
     if not gameIDs:
         return []
     if len(gameIDs) > 100:
-        return []
+        #get first 100 odds
+        gameIDs = gameIDs[:100]
     response = client.batch_get_item(
         RequestItems={
             'odds': {

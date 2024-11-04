@@ -89,7 +89,7 @@ resource "aws_elastic_beanstalk_application_version" "eb_app_version" {
   application = aws_elastic_beanstalk_application.eb_app.name
   bucket      = aws_s3_bucket.eb_bucket.bucket
   key         = "app.zip"
-  name        = "v1"
+  name        = "v2"
 }
 
 # Create a custom policy for DynamoDB access
