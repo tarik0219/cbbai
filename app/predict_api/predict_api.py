@@ -6,6 +6,7 @@ import os
 import numpy as np
 import pandas as pd
 import joblib
+import pickle
 def warn(*args, **kwargs):
     pass
 import warnings
@@ -16,7 +17,10 @@ predict_api = Blueprint('predict_api', __name__)
 scoresFile = os.path.join(os.getcwd(), "models/scores.pkl")
 probFile = os.path.join(os.getcwd(), "models/prob.pkl")
 
-
+tournamentFile = os.path.join(os.getcwd(), "models/tournament_model_v2.pkl")
+seedFile = os.path.join(os.getcwd(), "models/seed_model_v2.pkl")
+tournamentModel = pickle.load(open(tournamentFile, 'rb'))
+seedModel = pickle.load(open(seedFile, 'rb'))
 loaded_tournament_model = joblib.load('models/tournament_model_v2.pkl')
 loaded_seed_model = joblib.load('models/seed_model_v2.pkl')
 
@@ -49,30 +53,30 @@ class TeamData(BaseModel):
     q4l: int
     rank: int
 
-@predict_api.route('/tournamentList', methods=['POST'])
-def tournament_teams():
-    try:
-        data = request.get_json()
-        response = []
-        for team in data['teams']:
-            win = team['win']
-            loss = team['loss']
-            q1w = team['q1w']
-            q1l = team['q1l']
-            q2w = team['q2w']
-            q2l = team['q2l']
-            q3w = team['q3w']
-            q3l = team['q3l']
-            q4w = team['q4w']
-            q4l = team['q4l']
-            rank = team['rank']
-            input = pd.DataFrame([[win, loss, q1w, q1l, q2w, q2l, q3w, q3l, q4w, q4l, rank]])
-            tournamentOdds = loaded_tournament_model.predict_proba(input)[:, 1][0]
-            seed = loaded_seed_model.predict(input)[0]
-            response.append({'tournamentOdds':tournamentOdds,'seed':seed})
-        return jsonify(response)
-    except Exception as e:
-        return jsonify({"error":"Invalid JSON" + str(e)}), 400
+# @predict_api.route('/tournamentList', methods=['POST'])
+# def tournament_teams():
+#     try:
+#         data = request.get_json()
+#         response = []
+#         for team in data['teams']:
+#             win = team['win']
+#             loss = team['loss']
+#             q1w = team['q1w']
+#             q1l = team['q1l']
+#             q2w = team['q2w']
+#             q2l = team['q2l']
+#             q3w = team['q3w']
+#             q3l = team['q3l']
+#             q4w = team['q4w']
+#             q4l = team['q4l']
+#             rank = team['rank']
+#             input = pd.DataFrame([[win, loss, q1w, q1l, q2w, q2l, q3w, q3l, q4w, q4l, rank]])
+#             tournamentOdds = tournamentModel.predict_proba(input)[:, 1][0]
+#             seed = seedModel.predict(input)[0]
+#             response.append({'tournamentOdds':tournamentOdds,'seed':seed})
+#         return jsonify(response)
+#     except Exception as e:
+#         return jsonify({"error":"Invalid JSON" + str(e)}), 400
 
 #Predict Games
 @predict_api.route('/predictList', methods=['POST'])
