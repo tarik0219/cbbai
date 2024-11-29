@@ -25,7 +25,8 @@ resource "aws_iam_role_policy" "step_function_policy" {
       {
         Action = [
           "lambda:InvokeFunction",
-          "lambda:ListFunctions"
+          "lambda:ListFunctions",
+          "states:StartExecution"
         ]
         Effect   = "Allow"
         Resource = "*"
@@ -43,7 +44,7 @@ resource "aws_sfn_state_machine" "step_function" {
 resource "aws_cloudwatch_event_rule" "step_function_trigger" {
   name        = "StepFunctionTrigger"
   description = "Trigger Step Function every morning at 8am central time"
-  schedule_expression = "cron(0 8 * * ? *)"
+  schedule_expression = "cron(0 14 * * ? *)"
 }
 
 resource "aws_cloudwatch_event_target" "step_function_target" {

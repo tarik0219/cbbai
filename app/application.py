@@ -7,6 +7,7 @@ from flask_bootstrap import Bootstrap
 from scores.scores import bs
 from predict.predict import predict
 from datetime import datetime, timedelta
+from boxscores.boxscores import boxscore
 
 
 application = Flask(__name__, static_folder='static') 
@@ -19,6 +20,7 @@ application.register_blueprint(conference)
 application.register_blueprint(predict_api)
 application.register_blueprint(bs)
 application.register_blueprint(predict)
+application.register_blueprint(boxscore)
 
 @application.context_processor
 def inject_now():

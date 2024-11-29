@@ -5,21 +5,51 @@ import boto3
 import json
 from decimal import Decimal
 from aws_lambda_powertools import Logger
+import cloudscraper
+from cloudscraper import CloudScraper
 
 logger = Logger(service="cbb-ai")
-
 
 def team_name(team):
     team  = re.sub(r'\d+', '', team)
     team = team.rstrip()
     return team
 
+def login():
+	browser = cloudscraper.create_scraper()
+	browser.get('https://kenpom.com')
+	return browser
+
+def get_html(browser: CloudScraper, url: str):
+	"""
+	Performs a get request on the specified url.
+
+	Args:
+		browser (CloudScraper): Authenticated browser with full access to kenpom.com generated
+            by the `login` function.
+		url (str): The url to perform the get request on.
+	
+	Returns:
+		html (Bytes | Any): The return content.
+	
+	Raises:
+		Exception if get request gets a non-200 response code.
+	"""	
+	response = browser.get(url)
+	if response.status_code != 200:
+		raise Exception(f'Failed to retrieve {url} (status code: {response.status_code})')
+	return response.content
+
 def getKenpomWeb():
     try:
+        browser = login()
         url = "https://kenpom.com"
-        page = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.152 Safari/537.36'})
-        data = page.text
-        soup = BeautifulSoup(data, "html.parser")
+        # page = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.152 Safari/537.36'})
+        # # use this proxy 20.111.54.16:8123 in the requests.get() function if you are getting blocked
+        # #page = requests.get(url, proxies={"http": "20.111.54.16:8123", "https": "20.111.54.16:8123"})
+        # data = page.text
+        # soup = BeautifulSoup(data, "html.parser")
+        soup = BeautifulSoup(get_html(browser, url), "html.parser")
         table = soup.find('table', id="ratings-table")
         table_body = table.find('tbody')
         rows = table_body.find_all('tr')

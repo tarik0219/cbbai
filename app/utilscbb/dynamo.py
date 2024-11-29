@@ -5,8 +5,7 @@ from constants import constants
 
 def boto3_setup():
     try:
-        boto3.setup_default_session(aws_access_key_id=constants.aws_access_key_id, aws_secret_access_key=constants.aws_secret_access)
-        
+        boto3.setup_default_session(aws_access_key_id=constants.aws_access_key_id, aws_secret_access_key=constants.aws_secret_access) 
     except:
         try:
             boto3.setup_default_session(profile_name='tarik0219')
