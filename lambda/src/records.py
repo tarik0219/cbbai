@@ -9,18 +9,20 @@ import concurrent.futures
 logger = Logger(service="cbb-ai")
 
 
-def update_team_records_dynamo(teamID, record):
+def update_team_records_dynamo(teamID, record, projectedQuadRecord):
     logger.info("Updating dynamoDB table with records data")
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('cbb-ai')
-    table.update_item(
+    response = table.update_item(
         Key={
             'id': teamID
         },
-        UpdateExpression='SET records = :val',
+        UpdateExpression="set records = :r, projectedQuadRecords = :p",
         ExpressionAttributeValues={
-            ':val': record
-        }
+            ':r': record,
+            ':p': projectedQuadRecord
+        },
+        ReturnValues="UPDATED_NEW"
     )
     logger.info("DynamoDB table updated with records data")
     
@@ -32,19 +34,22 @@ def check_env_bool(env_var):
     
 def update_team_record(team, ALL, YEAR, NET_FLAG, teamRecords):
     try:
-        if ALL:
-            scheduleRecordData = get_team_schedule(team['id'], YEAR, NET_FLAG)['records']
-            del scheduleRecordData["probs"]
-            logger.info(f"Updating team record for {team['id']}", team=team['id'], record=scheduleRecordData)
-            update_team_records_dynamo(team['id'], scheduleRecordData)
-            return
-        teamRecord = team.get('records', None)
-        newTeamRecord = teamRecords[team['id']]
-        if teamRecord is None or teamRecord['win'] + teamRecord['loss'] != newTeamRecord['win'] + newTeamRecord['loss']:
-            logger.info(f"Updating team record for {team['id']}")
-            scheduleRecordData = get_team_schedule(team['id'], YEAR, NET_FLAG)['records']
-            del scheduleRecordData["probs"]
-            update_team_records_dynamo(team['id'], scheduleRecordData)
+        # if ALL:
+
+        scheduleRecordData = get_team_schedule(team['id'], YEAR, NET_FLAG)
+        records = scheduleRecordData['records']
+        projectedQuadRecords = scheduleRecordData['projectedQuadRecords']
+        del records["probs"]
+        logger.info(f"Updating team record for {team['id']}", team=team['id'], record=scheduleRecordData)
+        update_team_records_dynamo(team['id'], records, projectedQuadRecords)
+        return
+        # teamRecord = team.get('records', None)
+        # newTeamRecord = teamRecords[team['id']]
+        # if teamRecord is None or teamRecord['win'] + teamRecord['loss'] != newTeamRecord['win'] + newTeamRecord['loss']:
+        #     logger.info(f"Updating team record for {team['id']}")
+        #     scheduleRecordData = get_team_schedule(team['id'], YEAR, NET_FLAG)['records']
+        #     del scheduleRecordData["probs"]
+        #     update_team_records_dynamo(team['id'], scheduleRecordData)
     except Exception as e:
         logger.exception(f"Error updating team record for {team['id']}: {e}")
 

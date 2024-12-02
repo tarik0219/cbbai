@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from home.home import home
 from schedule.schedule import schedule
 from conference.conference import conference
@@ -21,6 +21,11 @@ application.register_blueprint(predict_api)
 application.register_blueprint(bs)
 application.register_blueprint(predict)
 application.register_blueprint(boxscore)
+
+
+@application.route('/ads.txt')
+def ads_txt():
+    return send_from_directory(application.root_path, 'ads.txt')
 
 @application.context_processor
 def inject_now():
