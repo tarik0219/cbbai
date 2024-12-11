@@ -301,7 +301,7 @@
     "Binghamton": "2066",
     "FDU": "161",
     "Manhattan": "2363",
-    "Tex. A&M-Commerce": "2837",
+    "East Texas A&M": "2837",
     "Charleston So.": "2127",
     "Jackson St.": "2296",
     "Saint Peter's": "2612",
@@ -334,7 +334,7 @@
     "CSUN": "2463",
     "NJIT": "2885",
     "Elon": "2210",
-    "Saint Francis (PA)": "2598",
+    "Saint Francis": "2598",
     "Holy Cross": "107",
     "Lindenwood": "2815",
     "McNeese": "2377",
@@ -358,9 +358,11 @@
     "Houston Christian": "2277",
     "Mississippi Val.": "2400",
     "Florida A&M": "50",
-    "IUPUI": "85",
+    "IU Indy": "85",
     "Green Bay": "2739",
     "LIU": "112358",
     "Hartford": "42",
-    "Le Moyne": "2330"
+    "Le Moyne": "2330",
+    "Mercyhurst":"2385",
+    "West Ga.": "2698"
 }

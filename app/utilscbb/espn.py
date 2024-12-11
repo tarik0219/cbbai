@@ -267,7 +267,14 @@ def get_espn_boxscore(gameId):
                 player_stats[l] = s
         awayData.append(player_stats)
     lastPlay = {}
-    lastPlayResponse = sports_json['plays'][-1]
+    try:
+        lastPlayResponse = sports_json['plays'][-1]
+    except:
+        lastPlayResponse = {
+            "team": None,
+            "text": None,
+            "clock": None
+        }
     teamAID, teamAName = sports_json['boxscore']['teams'][0]['team']['id'], sports_json['boxscore']['teams'][0]['team']['displayName']
     teamBID, teamBName = sports_json['boxscore']['teams'][1]['team']['id'], sports_json['boxscore']['teams'][1]['team']['displayName']
 
