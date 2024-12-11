@@ -273,7 +273,9 @@ def get_espn_boxscore(gameId):
         lastPlayResponse = {
             "team": None,
             "text": None,
-            "clock": None
+            "clock": {
+                "displayValue": None
+            }
         }
     teamAID, teamAName = sports_json['boxscore']['teams'][0]['team']['id'], sports_json['boxscore']['teams'][0]['team']['displayName']
     teamBID, teamBName = sports_json['boxscore']['teams'][1]['team']['id'], sports_json['boxscore']['teams'][1]['team']['displayName']

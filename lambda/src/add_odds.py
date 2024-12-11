@@ -38,6 +38,11 @@ def get_odds_by_date(date):
         homeTeam = team1['team']['displayName']
         #call cbb-ai dynamo table and get the average stats for the home team
         homeData = get_team_data_name(homeTeam)
+        # if homeData is not a blank list
+        if homeData:
+            homeAverage = homeData[0]['average']
+        else:
+            homeAverage = {}
         logger.info("Home team data", homeData = homeData)
 
         # Team 2
@@ -45,6 +50,11 @@ def get_odds_by_date(date):
         awayTeam = team2['team']['displayName']
         #call cbb-ai dynamo table and get the average stats for the away team
         awayData = get_team_data_name(awayTeam)
+        # if awayData is not a blank list
+        if awayData:
+            awayAverage = awayData[0]['average']
+        else:
+            awayAverage = {}
         logger.info("Away team data", awayData = awayData)
 
         # Game details
@@ -58,7 +68,10 @@ def get_odds_by_date(date):
                 oddsResponseList.append({
                     "gameID":gameID,
                     "spread":oddsResponse['items'][0]['spread'],
-                    "overUnder":oddsResponse['items'][0]['overUnder']
+                    "overUnder":oddsResponse['items'][0]['overUnder'],
+                    "homeData":homeAverage,
+                    "awayData":awayAverage,
+                    "siteType":siteType
                 })
             except:
                logger.warning(f"Warning no odds for game", gameID = gameID)
@@ -75,7 +88,10 @@ def batch_add_odds_dynamo(oddsResponseList):
                     Item={
                         'gameID': str(odds['gameID']),
                         'spread': str(odds['spread']),
-                        'overUnder': str(odds['overUnder'])
+                        'overUnder': str(odds['overUnder']),
+                        'homeData': odds['homeData'],
+                        'awayData': odds['awayData'],
+                        'siteType': odds['siteType']
                     }
                 )
         logger.info(f"Added odds to dynamoDB", numOdds = len(oddsResponseList))
@@ -104,7 +120,7 @@ def lambda_handler(event, context):
 
     todayDate = datetime.now().strftime("%Y%m%d")
     oddsResponseMap, oddsResponseList = get_odds_by_date(todayDate)
-    #batch_add_odds_dynamo(oddsResponseList)
+    batch_add_odds_dynamo(oddsResponseList)
     return {
         'statusCode': 200,
         'body': "success"

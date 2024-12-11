@@ -40,7 +40,6 @@ def update_team_record(team, ALL, YEAR, NET_FLAG, teamRecords):
         records = scheduleRecordData['records']
         projectedQuadRecords = scheduleRecordData['projectedQuadRecords']
         del records["probs"]
-        logger.info(f"Updating team record for {team['id']}", team=team['id'], record=scheduleRecordData)
         update_team_records_dynamo(team['id'], records, projectedQuadRecords)
         return
         # teamRecord = team.get('records', None)
@@ -67,7 +66,7 @@ def lambda_handler(event, context):
         logger.info("Getting all team data from dynamoDB")
         teams = get_all_team_data()
         logger.info("Comparing team records")
-        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
             futures = [executor.submit(update_team_record, team, ALL, YEAR, NET_FLAG, teamRecords) for team in teams]
             concurrent.futures.wait(futures)
     except Exception as e:

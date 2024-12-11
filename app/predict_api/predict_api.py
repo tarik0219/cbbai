@@ -18,8 +18,8 @@ probFile = os.path.join(os.getcwd(), "models/prob.pkl")
 
 tournamentFile = os.path.join(os.getcwd(), "models/tournament_model_v2.pkl")
 seedFile = os.path.join(os.getcwd(), "models/seed_model_v2.pkl")
-tournamentModel = pickle.load(open(tournamentFile, 'rb'))
-seedModel = pickle.load(open(seedFile, 'rb'))
+#tournamentModel = pickle.load(open(tournamentFile, 'rb'))
+#seedModel = pickle.load(open(seedFile, 'rb'))
 
 class TeamData(BaseModel):
     TempoRating: float
