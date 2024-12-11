@@ -2,6 +2,7 @@ import requests
 import boto3
 from datetime import datetime, timedelta
 from aws_lambda_powertools import Logger
+from utilscbb.dynamo import get_team_data_name
 
 
 logger = Logger(service="cbb-ai")
@@ -28,6 +29,25 @@ def get_odds_by_date(date):
     oddsResponseList = []
     for game in response['events']:
         gameID = game['id']
+        competition = game['competitions'][0]
+        siteType = competition.get('neutralSite')
+        logger.info("Game details", gameID = gameID, siteType = siteType)
+
+        # Team 1
+        team1 = competition['competitors'][0]
+        homeTeam = team1['team']['displayName']
+        #call cbb-ai dynamo table and get the average stats for the home team
+        homeData = get_team_data_name(homeTeam)
+        logger.info("Home team data", homeData = homeData)
+
+        # Team 2
+        team2 = competition['competitors'][1]
+        awayTeam = team2['team']['displayName']
+        #call cbb-ai dynamo table and get the average stats for the away team
+        awayData = get_team_data_name(awayTeam)
+        logger.info("Away team data", awayData = awayData)
+
+        # Game details
         oddsResponse = get_odds_by_game_id(gameID)
         if len(oddsResponse['items']) > 0:
             try:
@@ -84,8 +104,11 @@ def lambda_handler(event, context):
 
     todayDate = datetime.now().strftime("%Y%m%d")
     oddsResponseMap, oddsResponseList = get_odds_by_date(todayDate)
-    batch_add_odds_dynamo(oddsResponseList)
+    #batch_add_odds_dynamo(oddsResponseList)
     return {
         'statusCode': 200,
         'body': "success"
     }
+
+if __name__ == "__main__":
+    lambda_handler(None, None)

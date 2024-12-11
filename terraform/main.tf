@@ -162,19 +162,31 @@ resource "aws_lambda_function" "lambda_function_add_odds" {
 }
 
 #Create a DynamoDB table
-resource "aws_dynamodb_table" "example_table" {
-  name           = "cbb-ai"  # Change the table name as per your requirement
-  billing_mode   = "PAY_PER_REQUEST" # Choose billing mode, can be PROVISIONED for manual scaling
+resource "aws_dynamodb_table" "cbb_ai" {
+  name           = "cbb-ai"
+  billing_mode   = "PAY_PER_REQUEST"  # On-demand capacity mode
 
-  hash_key       = "id"         # Primary key
+  hash_key       = "id"  # Replace with your actual primary key
 
   attribute {
     name = "id"
-    type = "S"                 # Attribute type (S for String, N for Number, B for Binary)
+    type = "S"
+  }
+
+  # Define the GSI
+  global_secondary_index {
+    name            = "teamName-index"
+    hash_key        = "teamName"
+    projection_type = "ALL"
+  }
+
+  attribute {
+    name = "teamName"
+    type = "S"
   }
 
   tags = {
-    project        = "cbb-ai" # Replace with your tag values
+    Name = "cbb-ai"
   }
 }
 

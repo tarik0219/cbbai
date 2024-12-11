@@ -19,6 +19,8 @@ def get_all_team_data():
     table = dynamodb.Table('cbb-ai')
     response = table.scan()
     data = response['Items']
+    # get rid of all the items with no teamName
+    data = [item for item in data if 'teamName' in item]
     return data
 
 def get_team_data_name(team_name):

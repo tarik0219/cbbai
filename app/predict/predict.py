@@ -14,7 +14,10 @@ class PredictGame(FlaskForm):
     data = get_all_team_data()
     teams = []
     for team in data:
-        teams.append(team['teamName'])
+        try:
+            teams.append(team['teamName'])
+        except:
+            pass
     teams.sort()
     hometeam = SelectField('Home Team', choices = teams)
     awayteam = SelectField('Away Team', choices = teams)

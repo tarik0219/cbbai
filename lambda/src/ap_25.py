@@ -25,8 +25,12 @@ def addApRank(data):
         length_rank = len(ap_ranks)
         for count,team in enumerate(data):
             if team['id'] in ap_ranks:
+                if "ranks" not in team:
+                    team['ranks'] = {}
                 team['ranks']['ap_rank'] = ap_ranks[team['id']]
             else:
+                if "ranks" not in team:
+                    team['ranks'] = {}
                 team['ranks']['ap_rank'] = None
             data[count] = team
     except Exception as e:
@@ -44,9 +48,9 @@ def update_dynamoDB_table(data):
                 Key={
                     'id': team['id']
                 },
-                UpdateExpression="set ranks.ap_rank = :r",
+                UpdateExpression="set ranks = :r",
                 ExpressionAttributeValues={
-                    ':r': team['ranks']['ap_rank']
+                    ':r': team['ranks']
                 },
                 ReturnValues="UPDATED_NEW"
             )
