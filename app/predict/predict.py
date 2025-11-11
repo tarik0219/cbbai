@@ -60,6 +60,7 @@ def predictresults(hometeam,awayteam,neutral):
             }
         ]
     }
+    print(data)
     response = call_prediction_endpoint(data)
     homeScore = response[0]['homeScore']
     awayScore = response[0]['awayScore']

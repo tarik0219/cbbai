@@ -29,10 +29,10 @@ def ads_txt():
 
 @application.context_processor
 def inject_now():
-    if (datetime.utcnow() - timedelta(hours = 9)).date() < datetime.strptime("20241104", '%Y%m%d').date():
-        date = "2024-11-04"
-    elif (datetime.utcnow() - timedelta(hours = 9)).date() > datetime.strptime("20250407", '%Y%m%d').date():
-        date = "2025-04-07"
+    if (datetime.utcnow() - timedelta(hours = 9)).date() < datetime.strptime("20251103", '%Y%m%d').date():
+        date = "2025-11-03"
+    elif (datetime.utcnow() - timedelta(hours = 9)).date() > datetime.strptime("20260407", '%Y%m%d').date():
+        date = "2026-04-07"
     else:
         date = (datetime.utcnow() - timedelta(hours = 9)).strftime('%Y-%m-%d')
     return {'now': date}

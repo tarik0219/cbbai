@@ -1,4 +1,4 @@
-YEAR = "2025"
+YEAR = "2026"
 NET_RANK_BOOL = False
 PYTHON_ANYWHERE_PATH = "CollegeBasketballAnalyticsAPI/data/"
 LOCAL_PATH = "data/"
