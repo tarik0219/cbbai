@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+{% block title %}{{ data.teamData.teamName }} Schedule{% endblock %}
+{% block content %}
+
+<!-- Team Header -->
+<div class="page-header">
+    <div style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-lg); flex-wrap: wrap;">
+        <img src="{{ 'https://a.espncdn.com/i/teamlogos/ncaa/500/' + data.teamID + '.png' }}" 
+             onerror="this.onerror=null; this.src='/static/pics/basketball.png'" 
+             alt="{{ data.teamData.teamName }}" 
+             style="width: 80px; height: 80px;"
+             title="{{ data.teamData.teamName }}">
+        <div>
+            <h1 style="margin-bottom: 0;">{{ data.teamData.teamName }}</h1>
+            <p class="subtitle" style="margin-bottom: 0;">
+                <a href="{{ '/conference/' + data.teamData.conference }}" style="color: var(--text-secondary);">
+                    {{ data.teamData.conference }} Conference
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards Grid -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+    <!-- Record Card -->
+    <div class="card-modern">
+        <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            📊 Season Record
+        </h3>
+        <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
+            <span style="color: var(--text-secondary);">Overall:</span>
+            <strong style="font-size: 1.1rem;">{{ data.records.win }}-{{ data.records.loss }}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
+            <span style="color: var(--text-secondary);">Conference:</span>
+            <strong style="font-size: 1.1rem;">{{ data.records.confWin }}-{{ data.records.confLoss }}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">ATS:</span>
+            <strong style="font-size: 1.1rem;">{{ data.records.atsWin }}-{{ data.records.atsLoss }}-{{ data.records.atsPush }}</strong>
+        </div>
+    </div>
+
+    <!-- Projected Record Card -->
+    <div class="card-modern">
+        <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            🎯 Projected Record
+        </h3>
+        <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
+            <span style="color: var(--text-secondary);">Overall:</span>
+            <strong style="font-size: 1.1rem;">{{ data.records.projectedWin }}-{{ data.records.projectedLoss }}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-secondary);">Conference:</span>
+            <strong style="font-size: 1.1rem;">{{ data.records.confProjectedWin }}-{{ data.records.confProjectedLoss }}</strong>
+        </div>
+    </div>
+
+    <!-- Rankings Card -->
+    <div class="card-modern">
+        <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            🏆 Rankings
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); text-align: center;">
+            <div>
+                <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--spacing-xs);">CBB-AI</div>
+                <div class="rank-badge" style="margin: 0 auto;">{{ data.teamData.ranks.rank }}</div>
+            </div>
+            <div>
+                <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--spacing-xs);">AP</div>
+                <div class="rank-badge" style="margin: 0 auto;">
+                    {% if data.teamData.ranks.ap_rank %}{{ data.teamData.ranks.ap_rank }}{% else %}NR{% endif %}
+                </div>
+            </div>
+            <div>
+                <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--spacing-xs);">NET</div>
+                <div class="rank-badge" style="margin: 0 auto;">{{ data.teamData.ranks.net_rank }}</div>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); text-align: center; margin-top: var(--spacing-md); padding-top: var(--spacing-md); border-top: 1px solid var(--border-color);">
+            <div>
+                <div style="color: var(--text-secondary); font-size: 0.85rem;">OFF: <strong>{{ data.teamData.ranks.rankOff }}</strong></div>
+            </div>
+            <div>
+                <div style="color: var(--text-secondary); font-size: 0.85rem;">DEF: <strong>{{ data.teamData.ranks.rankDef }}</strong></div>
+            </div>
+            <div>
+                <div style="color: var(--text-secondary); font-size: 0.85rem;">TEMPO: <strong>{{ data.teamData.ranks.rankTempo }}</strong></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quad Records -->
+<div class="card-modern" style="margin-bottom: var(--spacing-xl);">
+    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-lg); text-align: center;">
+        📈 Quadrant Records
+    </h3>
+    <div style="overflow-x: auto;">
+        <table class="table table-modern" style="margin-bottom: 0;">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Quad 1</th>
+                    <th>Quad 2</th>
+                    <th>Quad 3</th>
+                    <th>Quad 4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Current</strong></td>
+                    <td><strong>{{ data.quadRecords.quad1.wins }}-{{ data.quadRecords.quad1.losses }}</strong></td>
+                    <td><strong>{{ data.quadRecords.quad2.wins }}-{{ data.quadRecords.quad2.losses }}</strong></td>
+                    <td><strong>{{ data.quadRecords.quad3.wins }}-{{ data.quadRecords.quad3.losses }}</strong></td>
+                    <td><strong>{{ data.quadRecords.quad4.wins }}-{{ data.quadRecords.quad4.losses }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Remaining</strong></td>
+                    <td>{{ data.projectedQuadRecords.quad1.wins + data.projectedQuadRecords.quad1.losses - data.quadRecords.quad1.wins - data.quadRecords.quad1.losses }}</td>
+                    <td>{{ data.projectedQuadRecords.quad2.wins + data.projectedQuadRecords.quad2.losses - data.quadRecords.quad2.wins - data.quadRecords.quad2.losses }}</td>
+                    <td>{{ data.projectedQuadRecords.quad3.wins + data.projectedQuadRecords.quad3.losses - data.quadRecords.quad3.wins - data.quadRecords.quad3.losses }}</td>
+                    <td>{{ data.projectedQuadRecords.quad4.wins + data.projectedQuadRecords.quad4.losses - data.quadRecords.quad4.wins - data.quadRecords.quad4.losses }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Projected</strong></td>
+                    <td><strong>{{ data.projectedQuadRecords.quad1.wins }}-{{ data.projectedQuadRecords.quad1.losses }}</strong></td>
+                    <td><strong>{{ data.projectedQuadRecords.quad2.wins }}-{{ data.projectedQuadRecords.quad2.losses }}</strong></td>
+                    <td><strong>{{ data.projectedQuadRecords.quad3.wins }}-{{ data.projectedQuadRecords.quad3.losses }}</strong></td>
+                    <td><strong>{{ data.projectedQuadRecords.quad4.wins }}-{{ data.projectedQuadRecords.quad4.losses }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- View Toggle Buttons -->
+<div style="text-align: center; margin-bottom: var(--spacing-xl);">
+    <button onclick="toggleView('all')" id="btnAll" class="btn btn-primary btn-modern" style="margin: 0 var(--spacing-xs);">
+        📅 All Games
+    </button>
+    <button onclick="toggleView('quad')" id="btnQuad" class="btn btn-secondary btn-modern" style="margin: 0 var(--spacing-xs);">
+        📊 By Quadrant
+    </button>
+</div>
+
+<!-- All Games Schedule -->
+<div id="viewAll">
+    <h2 style="text-align: center; color: var(--primary-color); margin-bottom: var(--spacing-lg);">
+        📅 Full Schedule
+    </h2>
+    
+    {% for game in data.games %}
+    <div class="game-card">
+        <div class="game-header">
+            <div class="game-time">
+                <div style="font-weight: 600;">{{ game.date }}</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">{{ game.time }} ET</div>
+            </div>
+            <div>
+                {% if game.gameType %}
+                <span class="stats-badge">{{ game.gameType }}</span>
+                {% endif %}
+                {% if game.quad %}
+                <span class="stats-badge" style="background-color: 
+                    {% if game.quad == 1 %}#fbbf24{% elif game.quad == 2 %}#94a3b8{% elif game.quad == 3 %}#a3e635{% else %}#86efac{% endif %};">
+                    Q{{ game.quad }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="team-row {% if game.completed and game.result == 'W' %}winner{% endif %}">
+            <div class="team-info">
+                <img src="{{ 'https://a.espncdn.com/i/teamlogos/ncaa/500/' + data.teamID + '.png' }}" 
+                     onerror="this.onerror=null; this.src='/static/pics/basketball.png'"
+                     alt="{{ data.teamData.teamName }}" 
+                     class="team-logo">
+                <div>
+                    <span class="team-name">{{ data.teamData.teamName }}</span>
+                    <span class="stats-badge">#{{ data.teamData.ranks.rank }}</span>
+                    {% if game.venue == "H" %}
+                    <span style="color: var(--text-secondary); font-size: 0.85rem;"> (Home)</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% if game.completed %}
+            <div class="team-score">{{ game.score }}</div>
+            {% endif %}
+        </div>
+
+        <div class="team-row {% if game.completed and game.result == 'L' %}winner{% endif %}">
+            <div class="team-info">
+                <img src="{{ 'https://a.espncdn.com/i/teamlogos/ncaa/500/' + game.opponentId + '.png' }}" 
+                     onerror="this.onerror=null; this.src='/static/pics/basketball.png'"
+                     alt="{{ game.opponentName }}" 
+                     class="team-logo">
+                <div>
+                    {% if game.opponentData %}
+                    <a href="{{ '/schedule/' + game.opponentId }}" class="team-name">
+                        {{ game.opponentName }}
+                    </a>
+                    <span class="stats-badge">#{{ game.opponentData.ranks.rank }}</span>
+                    <span class="stats-badge">NET: {{ game.opponentData.ranks.net_rank }}</span>
+                    {% else %}
+                    <span class="team-name">{{ game.opponentName }}</span>
+                    {% endif %}
+                    {% if game.venue == "@" %}
+                    <span style="color: var(--text-secondary); font-size: 0.85rem;"> (Away)</span>
+                    {% elif game.venue != "H" %}
+                    <span style="color: var(--text-secondary); font-size: 0.85rem;"> (Neutral)</span>
+                    {% endif %}
+                    {% if game.opponentData %}
+                    <br>
+                    <a href="{{ '/conference/' + game.opponentData.conference }}" style="font-size: 0.85rem; color: var(--text-secondary);">
+                        {{ game.opponentData.conference }}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% if game.completed %}
+            <div class="team-score">{{ game.opponentScore }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Game Footer Info -->
+        <div style="padding-top: var(--spacing-md); border-top: 1px solid var(--border-color); margin-top: var(--spacing-md);">
+            {% if game.completed %}
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
+                    <div>
+                        {% if game.result == 'W' %}
+                        <span style="color: var(--success-color); font-weight: 700; font-size: 1.1rem;">✓ WIN</span>
+                        {% else %}
+                        <span style="color: var(--secondary-color); font-weight: 700; font-size: 1.1rem;">✗ LOSS</span>
+                        {% endif %}
+                        {% if game.odds.spread != None %}
+                        <span style="color: var(--text-secondary); margin-left: var(--spacing-md);">
+                            Line: {{ game.odds.spread }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <a href="{{ '/boxscore/' + game.gameId + '/' + game.dateString }}" class="btn btn-primary btn-modern" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                        📊 Boxscore
+                    </a>
+                </div>
+            {% else %}
+                <div style="text-align: center;">
+                    {% if game.scorePrediction %}
+                    <div style="margin-bottom: var(--spacing-sm);">
+                        <strong style="color: var(--primary-color);">AI Prediction:</strong>
+                        <span style="font-size: 1.1rem; font-weight: 600;">
+                            {{ game.scorePrediction }} - {{ game.opponentScorePrediction }}
+                        </span>
+                        <span class="stats-badge" style="margin-left: var(--spacing-sm);">
+                            {{ "%.1f"|format(game.winProbability * 100) }}% Win Prob
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Quadrant View -->
+<div id="viewQuad" style="display: none;">
+    {% for n in range(4) %}
+    <div class="card-modern" style="margin-bottom: var(--spacing-xl);">
+        <h2 style="text-align: center; color: var(--primary-color); margin-bottom: var(--spacing-lg);">
+            {% if n == 0 %}🥇 Quadrant 1 Games
+            {% elif n == 1 %}🥈 Quadrant 2 Games
+            {% elif n == 2 %}🥉 Quadrant 3 Games
+            {% else %}📊 Quadrant 4 Games
+            {% endif %}
+        </h2>
+        
+        {% set quad_games = [] %}
+        {% for game in data.games %}
+            {% if game.quad == n + 1 %}
+                {% set _ = quad_games.append(game) %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if quad_games|length == 0 %}
+        <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-secondary);">
+            No Quadrant {{ n + 1 }} games scheduled
+        </div>
+        {% else %}
+            {% for game in quad_games %}
+            <div style="border-bottom: 1px solid var(--border-color); padding: var(--spacing-md) 0; {% if loop.last %}border-bottom: none;{% endif %}">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--spacing-xs);">
+                            {{ game.date }} - {{ game.time }} ET
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                            <img src="{{ 'https://a.espncdn.com/i/teamlogos/ncaa/500/' + game.opponentId + '.png' }}" 
+                                 onerror="this.onerror=null; this.src='/static/pics/basketball.png'"
+                                 alt="{{ game.opponentName }}" 
+                                 style="width: 30px; height: 30px;">
+                            {% if game.venue == "@" %}vs.{% else %}@{% endif %}
+                            {% if game.opponentData %}
+                            <a href="{{ '/schedule/' + game.opponentId }}" style="font-weight: 600;">
+                                {{ game.opponentName }}
+                            </a>
+                            <span class="stats-badge">#{{ game.opponentData.ranks.rank }}</span>
+                            {% else %}
+                            <span style="font-weight: 600;">{{ game.opponentName }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        {% if game.completed %}
+                            <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: var(--spacing-xs);">
+                                {{ game.score }} - {{ game.opponentScore }}
+                            </div>
+                            {% if game.result == 'W' %}
+                            <span style="color: var(--success-color); font-weight: 600;">✓ WIN</span>
+                            {% else %}
+                            <span style="color: var(--secondary-color); font-weight: 600;">✗ LOSS</span>
+                            {% endif %}
+                        {% else %}
+                            {% if game.scorePrediction %}
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                                Pred: {{ game.scorePrediction }}-{{ game.opponentScorePrediction }}
+                            </div>
+                            <span class="stats-badge">{{ "%.0f"|format(game.winProbability * 100) }}%</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% endfor %}
+    
+    <div style="padding: var(--spacing-lg); background-color: var(--light-bg); border-radius: var(--radius-md); text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+        <strong>Legend:</strong> vs. = Home Game | @ = Away Game | Neutral = Neutral Site
+    </div>
+</div>
+
+<script>
+function toggleView(view) {
+    const viewAll = document.getElementById('viewAll');
+    const viewQuad = document.getElementById('viewQuad');
+    const btnAll = document.getElementById('btnAll');
+    const btnQuad = document.getElementById('btnQuad');
+    
+    if (view === 'all') {
+        viewAll.style.display = 'block';
+        viewQuad.style.display = 'none';
+        btnAll.classList.remove('btn-secondary');
+        btnAll.classList.add('btn-primary');
+        btnQuad.classList.remove('btn-primary');
+        btnQuad.classList.add('btn-secondary');
+    } else {
+        viewAll.style.display = 'none';
+        viewQuad.style.display = 'block';
+        btnAll.classList.remove('btn-primary');
+        btnAll.classList.add('btn-secondary');
+        btnQuad.classList.remove('btn-secondary');
+        btnQuad.classList.add('btn-primary');
+    }
+}
+</script>
+
+{% endblock %}

@@ -1,108 +1,84 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<meta charset="UTF-8">
-<title>2024-25 CBB-AI Rankings</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css"
-    integrity="sha512-5Ad5E5eQ/7ObYvhnzKjMk21bscS1S7GnmvkiOu9qVdO4gs4fTbTtDY8Tc3qyqKfBtGczh03i9QIVxojd37RlZg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>
-    /* Add your custom styles here */
-    .container {
-        margin-top: 10px;
-    }
-    h1 {
-        text-align: center;
-        font-size: 48px;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px #fff;
-    }
 
-    table {
-        border-radius: 10px;
-        overflow: hidden;
-    }
+<div class="page-header">
+    <h1>🏀 2024-25 CBB-AI Rankings</h1>
+    <p class="subtitle">AI-Powered College Basketball Team Rankings & Analytics</p>
+</div>
 
-    th,
-    td {
-        font-size: 18px;
-        text-align: center;
-        vertical-align: middle !important;
-    }
+<div class="table-container">
+    <table class="table table-modern table-hover" id="rankingsTable">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Logo</th>
+                <th>Team Name</th>
+                <th>Conf</th>
+                <th>OFF</th>
+                <th>DEF</th>
+                <th>TEMPO</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for team in data %}
+            <tr>
+                <td>
+                    <span class="rank-badge {% if team.ranks.rank <= 10 %}top-10{% elif team.ranks.rank <= 25 %}top-25{% endif %}">
+                        {{team.ranks.rank}}
+                    </span>
+                </td>
+                <td>
+                    <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',team.id,'.png']) }}"
+                        onerror="this.onerror=null; this.src='/static/pics/basketball.png'"
+                        alt="{{ ''.join([team.teamName]) }}" 
+                        class="team-logo"
+                        title="{{ ''.join([team.teamName]) }}">
+                </td>
+                <td>
+                    <a href="{{ ''.join(['/schedule/', team.id ]) }}" class="team-name">
+                        {{team.teamName}}
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ ''.join(['/conference/', team.conference]) }}">
+                        {{team.conference}}
+                    </a>
+                </td>
+                <td>
+                    <strong>{{"%.2f"|format(team.average.offRating)}}</strong>
+                    <br>
+                    <span class="stats-badge">#{{"{}".format(team.ranks.rankOff)}}</span>
+                </td>
+                <td>
+                    <strong>{{"%.2f"|format(team.average.defRating)}}</strong>
+                    <br>
+                    <span class="stats-badge">#{{"{}".format(team.ranks.rankDef)}}</span>
+                </td>
+                <td>
+                    <strong>{{"%.2f"|format(team.average.TempoRating)}}</strong>
+                    <br>
+                    <span class="stats-badge">#{{"{}".format(team.ranks.rankTempo)}}</span>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-
-    /* Styles for mobile devices */
-    @media only screen and (max-width: 1000px) {
-        .container {
-            margin-top: 10px;
+<script>
+$(document).ready(function() {
+    $('#rankingsTable').DataTable({
+        "pageLength": 25,
+        "order": [[0, "asc"]],
+        "responsive": true,
+        "language": {
+            "search": "Search teams:",
+            "lengthMenu": "Show _MENU_ teams per page",
+            "info": "Showing _START_ to _END_ of _TOTAL_ teams"
         }
-
-        h1 {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px #fff;
-        }
-
-        th,
-        td {
-            font-size: 8px;
-            text-align: center;
-            vertical-align: middle !important;
-        }
-
-    }
-</style>
-<div class="container">
-    <h1>2024-25 CBB-AI Rankings</h1>
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered table-sm table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Rank</th>
-                    <th></th>
-                    <th>Team Name</th>
-                    <th>Conf</th>
-                    <th>OFF</th>
-                    <th>DEF</th>
-                    <th>TEMPO</th>
-                </tr>
-            </thead>
-            <tbody>
-            <tbody id="myTable">
-                {% for team in data %}
-                <tr>
-                    <td>{{team.ranks.rank}}</td>
-                    <td>
-                        <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',team.id,'.png']) }}"
-                            onerror="this.onerror=null; this.src='/static/pics/basketball.png'"
-                            alt="{{ ''.join([team.teamName]) }}" width="25" height="25"
-                            title="{{ ''.join([team.teamName]) }}"></td>
-                    <td>
-                        <a href="{{ ''.join(['/schedule/', team.id ]) }}"
-                            style="text-decoration: none;">{{team.teamName}}</a>
-                    </td>
-                    <td><a href="{{ ''.join(['/conference/', team.conference]) }}"
-                        style="text-decoration: none;">{{team.conference}}</a></td>
-                    <td>
-                        {{"%.2f"|format(team.average.offRating)}}
-                        <br>
-                        <sub> {{team.ranks.rankOff}}</sub>
-                    </td>
-                    <td>
-                        {{"%.2f"|format(team.average.defRating)}}
-                        <br>
-                        <sub> {{team.ranks.rankDef}}</sub>
-                    </td>
-                    <td>
-                        {{"%.2f"|format(team.average.TempoRating)}}
-                        <br>
-                        <sub> {{team.ranks.rankTempo}}</sub>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    });
+});
+</script>
 
 {% endblock %}

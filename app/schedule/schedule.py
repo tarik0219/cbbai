@@ -14,6 +14,6 @@ schedule = Blueprint('schedule', __name__)
 @schedule.route('/schedule/<id>' , methods=['GET','POST'])
 def post_schedule(id):
     data = get_team_schedule(id, constants.YEAR, constants.NET_RANK_BOOL)
-    return render_template('schedule.html', data = data)
+    return render_template('schedule_new.html', data = data)
 
 

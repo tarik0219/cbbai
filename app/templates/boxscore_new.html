@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% block title %}Box Score{% endblock %}
+{% block head %}
+<meta http-equiv="refresh" content="60">
+{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1>📊 Box Score</h1>
+    {% if score.status == 'post' and score.period == 0 %}
+    <p class="subtitle" style="color: var(--secondary-color);">POSTPONED</p>
+    {% elif score.status == 'in' %}
+    <p class="subtitle" style="color: var(--secondary-color);">🔴 LIVE: {{ score.half}} {{ score.clock}}</p>
+    {% elif score.status == 'post' and score.period > 2 %}
+    <p class="subtitle">Final {{score.half}}</p>
+    {% else %}
+    <p class="subtitle">Final</p>
+    {% endif %}
+    {% if score.broadcast %}
+    <p class="subtitle" style="font-size: 0.9rem;">📺 {{ score.broadcast }}</p>
+    {% endif %}
+</div>
+
+<!-- Score Card -->
+<div class="game-card" style="max-width: 800px; margin: 0 auto var(--spacing-xl);">
+    <!-- Away Team -->
+    <div class="team-row {% if score.awayScore > score.homeScore %}winner{% endif %}">
+        <div class="team-info">
+            <img src="{{ 'https://a.espncdn.com/i/teamlogos/ncaa/500/' + score.awayTeamId + '.png' }}"
+                 onerror="this.onerror=null; this.src='/static/pics/basketball.png'"
+                 alt="{{ score.awayTeam }}" 
+                 class="team-logo"
+                 style="width: 50px; height: 50px;">
+            <div>
+                <span class="team-name" style="font-size: 1.3rem;">{{ score.awayTeam }}</span>
+            </div>
+        </div>
+        <div class="team-score" style="font-size: 2rem;">{{ score.awayScore }}</div>
+    </div>
+
+    <!-- Home Team -->
+    <div class="team-row {% if score.homeScore > score.awayScore %}winner{% endif %}">
+        <div class="team-info">
+            <img src="{{ 'https://a.espncdn.com/i/teamlogos/ncaa/500/' + score.homeTeamId + '.png' }}"
+                 onerror="this.onerror=null; this.src='/static/pics/basketball.png'"
+                 alt="{{ score.homeTeam }}" 
+                 class="team-logo"
+                 style="width: 50px; height: 50px;">
+            <div>
+                <span class="team-name" style="font-size: 1.3rem;">{{ score.homeTeam }}</span>
+            </div>
+        </div>
+        <div class="team-score" style="font-size: 2rem;">{{ score.homeScore }}</div>
+    </div>
+
+    {% if lastPlay and lastPlay.text %}
+    <div style="padding-top: var(--spacing-md); border-top: 1px solid var(--border-color); margin-top: var(--spacing-md);">
+        <div style="font-weight: 600; color: var(--primary-color); margin-bottom: var(--spacing-xs);">
+            🏀 Last Play {% if lastPlay.clock %}({{ lastPlay.clock }}){% endif %}
+        </div>
+        <div style="color: var(--text-secondary);">
+            {% if lastPlay.team %}{{ lastPlay.team }}: {% endif %}{{ lastPlay.text }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Away Team Stats -->
+<div class="card-modern" style="margin-bottom: var(--spacing-xl);">
+    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-lg); text-align: center;">
+        {{ score.awayTeam }} - Player Statistics
+    </h3>
+    <div style="overflow-x: auto;">
+        <table class="table table-modern">
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Player</th>
+                    <th>MIN</th>
+                    <th>FG</th>
+                    <th>3PT</th>
+                    <th>FT</th>
+                    <th>REB</th>
+                    <th>AST</th>
+                    <th>BLK</th>
+                    <th>STL</th>
+                    <th>TO</th>
+                    <th>PTS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in awayStats %}
+                <tr>
+                    <td style="text-align: left;"><strong>{{ player.name }}</strong></td>
+                    <td>{{ player.min }}</td>
+                    <td>{{ player.fg }}</td>
+                    <td>{{ player.threePt }}</td>
+                    <td>{{ player.ft }}</td>
+                    <td>{{ player.reb }}</td>
+                    <td>{{ player.ast }}</td>
+                    <td>{{ player.blk }}</td>
+                    <td>{{ player.stl }}</td>
+                    <td>{{ player.to }}</td>
+                    <td><strong>{{ player.pts }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Home Team Stats -->
+<div class="card-modern" style="margin-bottom: var(--spacing-xl);">
+    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-lg); text-align: center;">
+        {{ score.homeTeam }} - Player Statistics
+    </h3>
+    <div style="overflow-x: auto;">
+        <table class="table table-modern">
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Player</th>
+                    <th>MIN</th>
+                    <th>FG</th>
+                    <th>3PT</th>
+                    <th>FT</th>
+                    <th>REB</th>
+                    <th>AST</th>
+                    <th>BLK</th>
+                    <th>STL</th>
+                    <th>TO</th>
+                    <th>PTS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in homeStats %}
+                <tr>
+                    <td style="text-align: left;"><strong>{{ player.name }}</strong></td>
+                    <td>{{ player.min }}</td>
+                    <td>{{ player.fg }}</td>
+                    <td>{{ player.threePt }}</td>
+                    <td>{{ player.ft }}</td>
+                    <td>{{ player.reb }}</td>
+                    <td>{{ player.ast }}</td>
+                    <td>{{ player.blk }}</td>
+                    <td>{{ player.stl }}</td>
+                    <td>{{ player.to }}</td>
+                    <td><strong>{{ player.pts }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Team Stats Comparison -->
+{% if awayTeamStats and homeTeamStats %}
+<div class="card-modern">
+    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-lg); text-align: center;">
+        Team Statistics Comparison
+    </h3>
+    <div style="overflow-x: auto;">
+        <table class="table table-modern">
+            <thead>
+                <tr>
+                    <th>{{ score.awayTeam }}</th>
+                    <th>Stat</th>
+                    <th>{{ score.homeTeam }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>{{ awayTeamStats.fieldGoalPct }}%</strong></td>
+                    <td>FG%</td>
+                    <td><strong>{{ homeTeamStats.fieldGoalPct }}%</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>{{ awayTeamStats.threePointPct }}%</strong></td>
+                    <td>3PT%</td>
+                    <td><strong>{{ homeTeamStats.threePointPct }}%</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>{{ awayTeamStats.freeThrowPct }}%</strong></td>
+                    <td>FT%</td>
+                    <td><strong>{{ homeTeamStats.freeThrowPct }}%</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>{{ awayTeamStats.totalRebounds }}</strong></td>
+                    <td>Rebounds</td>
+                    <td><strong>{{ homeTeamStats.totalRebounds }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>{{ awayTeamStats.assists }}</strong></td>
+                    <td>Assists</td>
+                    <td><strong>{{ homeTeamStats.assists }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>{{ awayTeamStats.turnovers }}</strong></td>
+                    <td>Turnovers</td>
+                    <td><strong>{{ homeTeamStats.turnovers }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>{{ awayTeamStats.steals }}</strong></td>
+                    <td>Steals</td>
+                    <td><strong>{{ homeTeamStats.steals }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>{{ awayTeamStats.blocks }}</strong></td>
+                    <td>Blocks</td>
+                    <td><strong>{{ homeTeamStats.blocks }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

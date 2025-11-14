@@ -1,97 +1,68 @@
 {% extends "base.html" %}
-{% block title %} {{conference}} {% endblock %}
+{% block title %}{{conference}}{% endblock %}
 {% block content %}
-<meta charset="UTF-8">
-<title>2023 College Basketball AI Rankings</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css"
-    integrity="sha512-5Ad5E5eQ/7ObYvhnzKjMk21bscS1S7GnmvkiOu9qVdO4gs4fTbTtDY8Tc3qyqKfBtGczh03i9QIVxojd37RlZg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>
-    /* Add your custom styles here */
-    .container {
-        margin-top: 10px;
-    }
 
-    h1 {
-        text-align: center;
-        font-size: 48px;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px #fff;
-    }
+<div class="page-header">
+    <h1>
+        <img src="{{ ''.join(['/static/pics/', conference ,'.png']) }}" 
+             alt="{{ ''.join([conference]) }}" 
+             class="conference-logo"
+             title="{{ ''.join([conference]) }}">
+        {{conference}} Conference
+    </h1>
+    <p class="subtitle">Projections & Standings</p>
+</div>
 
-    table {
-        border-radius: 10px;
-        overflow: hidden;
-    }
+<div class="table-container">
+    <table class="table table-modern table-hover" id="conferenceTable">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Logo</th>
+                <th>Team</th>
+                <th>Conf Record</th>
+                <th>GB</th>
+                <th>Projected</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for team in data %}
+            <tr>
+                <td>
+                    <span class="rank-badge">{{loop.index}}</span>
+                </td>
+                <td>
+                    <img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',team.id,'.png']) }}"
+                         alt="{{ ''.join([team.teamName]) }}" 
+                         class="team-logo"
+                         title="{{ ''.join([team.teamName]) }}">
+                </td>
+                <td>
+                    <a href="{{ ''.join(['/schedule/', team.id ]) }}" class="team-name">
+                        {{ team.teamName }}
+                    </a>
+                    <span class="stats-badge">#{{ team.ranks.rank }}</span>
+                </td>
+                <td>
+                    <strong>{{ team.record.confWin }} - {{ team.record.confLoss }}</strong>
+                </td>
+                <td>{{team.record.gamesBehind}}</td>
+                <td>{{ team.records.confProjectedWin }} - {{ team.records.confProjectedLoss }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-    th,
-    td {
-        font-size: 18px;
-        text-align: center;
-        vertical-align: middle !important;
-    }
+<script>
+$(document).ready(function() {
+    $('#conferenceTable').DataTable({
+        "pageLength": 25,
+        "order": [[0, "asc"]],
+        "responsive": true,
+        "searching": true
+    });
+});
+</script>
 
-    #hide{
-        display: none;
-    }
-
-    /* Styles for mobile devices */
-    @media only screen and (max-width: 1000px) {
-        .container {
-            margin-top: 10px;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px #fff;
-        }
-
-        th,
-        td {
-            font-size: 8px;
-            text-align: center;
-            vertical-align: middle !important;
-        }
-
-    }
-</style>
-
-<div class="container">
-    <h1><img src="{{ ''.join(['/static/pics/', conference ,'.png']) }}" alt="{{ ''.join([conference]) }}" width="50"
-        height="40" title="{{ ''.join([conference]) }}">{{conference}} Projections/Standings</h1>
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered table-sm table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Rank</th>
-                    <th></th>
-                    <th>Team</th>
-                    <th>W-L</th>
-                    <th>GB</th>
-                    <th>Proj</th>
-                </tr>
-            </thead>
-            <tbody>
-            <tbody>
-                {% for team in data %}
-                <tr>
-                    <td>{{loop.index}}</td>
-                    <td><img src="{{ ''.join(['https://a.espncdn.com/i/teamlogos/ncaa/500/',team.id,'.png']) }}"
-                            alt="{{ ''.join([team.teamName]) }}" width="25" height="25"
-                            title="{{ ''.join([team.teamName]) }}"></td>
-                    <td><a href="{{ ''.join(['/schedule/', team.id ]) }}" style="text-decoration: none;">{{ team.teamName
-                            }}</a> #{{ team.ranks.rank }}</td>
-                    <td>{{ team.record.confWin }} - {{ team.record.confLoss }}</td>
-                    <td>{{team.record.gamesBehind}}</td>
-                    <td>{{ team.records.confProjectedWin }} - {{ team.records.confProjectedLoss }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <br>
-    </div>
 {% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}About - CBB AI{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1><i class="fas fa-info-circle"></i> About CBB AI</h1>
+    <p>Your source for college basketball predictions and analytics</p>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Welcome to CBB AI</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h3>Our Mission</h3>
+                    <p class="lead">Welcome recruiters, friends, and basketball enthusiasts. This website makes it easy for you to predict college basketball games using a proprietary machine learning algorithm, while also projecting your favorite teams' results.</p>
+                    
+                    <h3 class="mt-4">What We Offer</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-label">AI-Powered Predictions</div>
+                            <div class="stat-description">Advanced machine learning algorithms analyze thousands of data points</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-label">Live Scores & Schedules</div>
+                            <div class="stat-description">Real-time updates on games and team schedules</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-label">Team Rankings</div>
+                            <div class="stat-description">Comprehensive rankings and conference standings</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="stat-label">Detailed Analytics</div>
+                            <div class="stat-description">In-depth statistics and performance metrics</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-4">Our Story</h3>
+                    <p>Founded in 2020, CBB AI has been providing accurate college basketball predictions and analytics to fans, analysts, and enthusiasts. Our proprietary machine learning model continuously learns and adapts to provide you with the most accurate predictions possible.</p>
+                    
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-heart"></i> <strong>Support Us:</strong> Please feel free to look around and don't be afraid to donate to help maintain the website. Your support helps us continue providing free predictions and analytics to the basketball community.
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body text-center">
+                            <i class="fas fa-basketball-ball" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                            <h4>Since 2020</h4>
+                            <p class="text-muted">Providing accurate basketball predictions</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Quick Links</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><a href="/"><i class="fas fa-home"></i> Home & Rankings</a></li>
+                                <li class="mb-2"><a href="/predict"><i class="fas fa-brain"></i> Make Predictions</a></li>
+                                <li class="mb-2"><a href="/scores"><i class="fas fa-list"></i> Game Scores</a></li>
+                                <li class="mb-2"><a href="/conference"><i class="fas fa-users"></i> Conferences</a></li>
+                                <li class="mb-2"><a href="/disclaimer"><i class="fas fa-exclamation-triangle"></i> Disclaimer</a></li>
+                                <li class="mb-2"><a href="/donate"><i class="fas fa-donate"></i> Donate</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

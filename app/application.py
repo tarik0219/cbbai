@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, render_template
 from home.home import home
 from schedule.schedule import schedule
 from conference.conference import conference
@@ -26,6 +26,14 @@ application.register_blueprint(boxscore)
 @application.route('/ads.txt')
 def ads_txt():
     return send_from_directory(application.root_path, 'ads.txt')
+
+@application.route('/about')
+def about():
+    return render_template('about_modern.html')
+
+@application.route('/disclaimer')
+def disclaimer():
+    return render_template('disclaimer_new.html')
 
 @application.context_processor
 def inject_now():
